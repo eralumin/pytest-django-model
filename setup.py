@@ -13,7 +13,7 @@ def read(fname):
 
 setup(
     name="pytest-django-models",
-    version="0.1.0",
+    version="0.1.1-2",
     author="Kevin Marilleau",
     author_email="kevin.marilleau@gmail.com",
     maintainer="Kevin Marilleau",

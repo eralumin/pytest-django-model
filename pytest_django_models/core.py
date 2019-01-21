@@ -215,8 +215,7 @@ class TestModel(type):
 
     def __repr__(cls):
         join = lambda x: ", ".join(x)
-
         return (
-            f"<{cls}: constants({join(cls._meta.constants)}), "
-            f"fields({join(cls._meta.fields)}), meta({join(cls._meta.meta)})>"
+            f"<{cls.__name__}: constants({join(cls._meta.constants)}), "
+            f"fields({join(cls._meta.fields)}), Meta({join(cls._meta.meta)})>"
         )
