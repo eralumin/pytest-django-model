@@ -36,9 +36,6 @@ def pytest_assertrepr_compare(op, left, right):
         return [msg] if msg else None
 
 
-@pytest.fixture(scope="session", autouse=True, name="pytest-django-models-generated")
-def pytest_django_models(request):
-    def del_file():
+def pytest_sessionfinish(session, exitstatus):
+    if os.path.isfile(FILE):
         os.remove(FILE)
-
-    request.addfinalizer(del_file)

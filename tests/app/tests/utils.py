@@ -5,12 +5,7 @@ from collections import Counter
 from django.apps import apps
 from django.db.models import Model
 from .factories import APP_LABEL
-
-# ASSUME UTILS
-##############
-def models_running():
-    return [model_name for model_name in apps.all_models[APP_LABEL]]
-
+from pytest_django_models.utils import django_models
 
 # ASSERT UTILS
 ##############
@@ -32,6 +27,12 @@ def have_similarities(*args):
     elements = Counter([element for arg in args for element in arg])
 
     return [element for element, count in elements.items() if count > 1]
+
+
+def model_exists(model):
+    django_model = django_models[APP_LABEL].pop(model.lower(), None)
+
+    return True if django_model else False
 
 
 # CREATE OBJECTS UTILS
@@ -70,3 +71,4 @@ def get_django_model(name, constants, fields, meta, parents=None):
     bases = parents if parents else (Model,)
 
     return type(name, bases, dct)
+

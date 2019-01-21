@@ -22,7 +22,7 @@ from .factories import (
     fake_parents,
     fake_word,
 )
-from .utils import models_running, have_difference, get_django_model
+from .utils import model_exists, have_difference, get_django_model
 
 
 class StatefulTestAttributeObject(RuleBasedStateMachine):
@@ -183,7 +183,8 @@ class StatefulTestModelGenerator(RuleBasedStateMachine):
 
     @rule(target=name, name=fake_class_name())
     def add_name(self, name):
-        assume(name.lower() not in models_running())
+        assume(not model_exists(name))
+
         return name
 
     @rule(target=constants, constants=fake_constants())

@@ -1,13 +1,15 @@
 # coding: utf-8
 
-from inspect import isfunction, isclass
+from inspect import isclass, isfunction
+from packaging import version
 
+from django.apps import apps
 from django.db.models import Field, Model
 from django.db.models.base import ModelBase
 
-from .utils import pytest_exit, is_dunder, a_or_an
 from .file import FileGenerator
 from .objects import get_model_object
+from .utils import a_or_an, is_dunder, pytest_exit, delete_django_model
 
 
 class InvalidModelError(AttributeError, NameError):
@@ -58,6 +60,8 @@ class TestModel(type):
         #############
         OriginalObject = get_model_object(original)
         TesterObject = get_model_object(tester)
+        # Remove tester from django cache
+        delete_django_model(original.__module__, tester_name)
 
         # Get Test Functions
         generated_file = FileGenerator(OriginalObject, TesterObject)

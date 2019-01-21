@@ -7,6 +7,7 @@ from django.db.models import CharField
 from hypothesis import assume
 from hypothesis import strategies as st
 from hypothesis.stateful import Bundle, RuleBasedStateMachine, consumes, rule
+from .utils import model_exists
 
 from pytest_django_models.core import (
     InvalidModelError,
@@ -30,7 +31,7 @@ from .utils import (
     get_fields,
     get_meta_class,
     have_similarities,
-    models_running,
+    model_exists,
 )
 
 
@@ -41,7 +42,7 @@ class StatefulTestTestModel(RuleBasedStateMachine):
 
     @rule(target=name, name=fake_class_name())
     def add_name(self, name):
-        assume(name.lower() not in models_running())
+        assume(not model_exists(name))
 
         return name
 
@@ -178,6 +179,8 @@ class StatefulTestTestModel(RuleBasedStateMachine):
         except Exception as e:
             pytest.fail(e)
 
+        assert not model_exists(name)
+
     @rule(data=consumes(data))
     def assert_no_meta(self, data):
         original, tester, parents = data.original, data.tester, data.parents
@@ -189,6 +192,8 @@ class StatefulTestTestModel(RuleBasedStateMachine):
         with pytest.raises(ModelNotFoundError, match=error_msg):
             TestModel(name, bases, dct)
 
+        assert not model_exists(name)
+
     @rule(data=consumes(data), invalid_class_name=consumes(name))
     def assert_original_model_not_found(self, data, invalid_class_name):
         original, tester, parents = data.original, data.tester, data.parents
@@ -199,6 +204,8 @@ class StatefulTestTestModel(RuleBasedStateMachine):
         error_msg = f"'Meta' inner class has not 'model' attribute."
         with pytest.raises(ModelNotFoundError, match=error_msg):
             TestModel(name, bases, dct)
+
+        assert not model_exists(name)
 
     @rule(
         data=consumes(data),
@@ -218,6 +225,8 @@ class StatefulTestTestModel(RuleBasedStateMachine):
         error_msg = get_invalid_model_msg(invalid_class)
         with pytest.raises(InvalidModelError, match=error_msg):
             TestModel(name, bases, dct)
+
+        assert not model_exists(name)
 
     @rule(
         data=consumes(data),
@@ -245,6 +254,8 @@ class StatefulTestTestModel(RuleBasedStateMachine):
         with pytest.raises(InvalidModelError, match=error_msg):
             TestModel(name, bases, dct)
 
+        assert not model_exists(name)
+
     @rule(data=consumes(data), dirty_fields=dirty_fields)
     def assert_is_invalid_model(self, data, dirty_fields):
         original, tester, parents = data.original, data.tester, data.parents
@@ -261,6 +272,8 @@ class StatefulTestTestModel(RuleBasedStateMachine):
         )
         with pytest.raises(InvalidModelError, match=error_msg):
             TestModel(name, bases, dct)
+
+        assert not model_exists(name)
 
 
 TestTestModel = StatefulTestTestModel.TestCase

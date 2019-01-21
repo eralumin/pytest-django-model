@@ -91,9 +91,6 @@ class FileGenerator:
         # Write Test Function.
         func = FUNC_DEF_FORMAT.format(func_name=func_name, Model=self.original._meta.name)
         for attr_name, attr in getattr(self.tester._meta, attr_type).items():
-            if not hasattr(attr, "breadcrumb"):
-                import ipdb; ipdb.set_trace(context=10)
-
             original_attr = self.get_original_attr(
                 instance=self.original,
                 attr=attr_name,

@@ -24,7 +24,7 @@ from .factories import (
     fake_constants,
     fake_fields_data,
 )
-from .utils import hasattrs, models_running, get_django_model
+from .utils import hasattrs, model_exists, get_django_model
 
 
 class StatefulTestFileGenerator(RuleBasedStateMachine):
@@ -42,7 +42,7 @@ class StatefulTestFileGenerator(RuleBasedStateMachine):
 
     @rule(target=name, name=fake_class_name())
     def add_name(self, name):
-        assume(name.lower() not in models_running())
+        assume(not model_exists(name))
         return name
 
     @rule(target=constants, constants=fake_constants())
