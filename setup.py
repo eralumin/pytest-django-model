@@ -22,7 +22,6 @@ setup(
     url="https://github.com/kmarilleau/pytest-django-models",
     description="A Simple Way to Test your Django Models",
     long_description=read("README.rst"),
-    py_modules=["pytest_django_models"],
     python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
     install_requires=["pytest>=3.5.0", "django"],
     classifiers=[
@@ -44,4 +43,7 @@ setup(
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
     entry_points={"pytest11": ["django-models = pytest_django_models.plugin"]},
+    packages=["pytest_django_models"],
+    package_dir={"pytest_django_models": "pytest_django_models"},
+    package_data={"pytest_django_models": ["*.py"]}
 )

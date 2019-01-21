@@ -203,7 +203,7 @@ class StatefulTestTestModel(RuleBasedStateMachine):
     @rule(
         data=consumes(data),
         invalid_class_name=consumes(name),
-        invalid_type=st.one_of(BASIC_TYPES),
+        invalid_type=st.one_of(*BASIC_TYPES).filter(lambda x: not isinstance(x, float)),
         isclass=st.booleans(),
     )
     def assert_original_is_invalid_model(
@@ -223,7 +223,7 @@ class StatefulTestTestModel(RuleBasedStateMachine):
         data=consumes(data),
         invalid_class_name=consumes(name),
         isiterable=st.booleans(),
-        invalid_type=st.one_of(BASIC_TYPES),
+        invalid_type=st.one_of(*BASIC_TYPES).filter(lambda x: not isinstance(x, float)),
         isclass=st.booleans(),
     )
     def assert_parents_invalid_model(

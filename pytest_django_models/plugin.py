@@ -14,10 +14,11 @@ def pytest_assertrepr_compare(op, left, right):
     value_str = lambda x, y="": f" {x}." if len(str(x)) < 80 else f"{y}\n    {x}"
 
     if all(isinstance(obj, AttributeObject) for obj in [left, right]) and op == "==":
+        msg = None
         if left.value is NotImplemented:
             msg = assert_msg(
-                f"{left.breadcrumb} doesn't exist. The expected value is:\n"
-                f"  - {right.cls}:{value_str(right.value))}"
+                f"{left.breadcrumb} doesn't exist, the expected value is:\n"
+                f"  - {right.cls}:{value_str(right.value)}"
             )
         elif left.cls != right.cls:
             msg = assert_msg(
@@ -32,7 +33,7 @@ def pytest_assertrepr_compare(op, left, right):
                 f"  - {right.breadcrumb} value is{value_str(right.value, ':')}"
             )
 
-    return [msg]
+        return [msg] if msg else None
 
 
 @pytest.fixture(scope="session", autouse=True, name="pytest-django-models-generated")

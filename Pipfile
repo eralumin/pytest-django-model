@@ -11,7 +11,10 @@ pytest = "*"
 pytest-cov = "*"
 pytest-django = "*"
 pytest-pythonpath = "*"
-ipdb = "*"
 
 [requires]
 python_version = "3.7"
+
+[dev-packages]
+black = "*"
+ipdb = "*"

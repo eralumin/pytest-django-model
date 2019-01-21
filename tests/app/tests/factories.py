@@ -62,6 +62,7 @@ COMPLEX_DATA_STRUCTURE_TYPES = [COMPLEX_DICTS, COMPLEX_LISTS, COMPLEX_TUPLES]
 
 TYPES = [*BASIC_TYPES, *DATA_STRUCTURE_TYPES, *COMPLEX_DATA_STRUCTURE_TYPES]
 
+OPERATORS = [st.just(op) for op in ["==", "!=", ">", "<", ">=", "<="]]
 
 # OBJECTS FACTORIES
 ###################
@@ -96,7 +97,6 @@ def fake_constant():
 
 def fake_constants():
     return st.dictionaries(keys=fake_attr_name(), values=fake_constant(), max_size=5)
-
 
 @composite
 def fake_field_data(draw, dirty=False):
