@@ -50,17 +50,20 @@ class StatefulTestPytestAssertReprCompare(RuleBasedStateMachine):
             if left.value is NotImplemented:
                 assert msg.startswith(
                     assert_msg
-                    + f"{left.breadcrumb} doesn't exist, the expected value is:\n"
+                    + f"{left.breadcrumb} doesn't exist, "
+                    + "the expected value is:\n"
                 )
             elif left.cls != right.cls:
                 assert msg.startswith(
                     assert_msg
-                    + f"{left.breadcrumb} and {right.breadcrumb} are not the same type:\n"
+                    + f"{left.breadcrumb} and {right.breadcrumb} "
+                    + "are not the same type:\n"
                 )
             elif left.value != right.value:
                 assert msg.startswith(
                     assert_msg
-                    + f"{left.breadcrumb} and {right.breadcrumb} don't have the same value.\n"
+                    + f"{left.breadcrumb} and {right.breadcrumb} "
+                    + "don't have the same value.\n"
                 )
 
     @rule(

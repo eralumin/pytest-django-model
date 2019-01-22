@@ -162,12 +162,7 @@ FIELD_ATTRS = {
     "editable": {"value": st.booleans()},
     "help_text": {"value": fake_text()},
     "max_length": {
-        "excluded": [
-            *BINARY_FIELDS,
-            *BOOL_FIELDS,
-            *NUMERIC_FIELDS,
-            models.TextField,
-        ],
+        "excluded": [*BINARY_FIELDS, *BOOL_FIELDS, *NUMERIC_FIELDS, models.TextField],
         "required": [models.CharField, models.EmailField, models.URLField],
         "value": st.integers(min_value=0, max_value=255),
     },

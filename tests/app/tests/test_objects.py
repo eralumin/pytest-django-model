@@ -158,8 +158,10 @@ class StatefulPytestDjangoModelObject(RuleBasedStateMachine):
         # Test __repr__
         join = lambda x: ", ".join(x)
         assert repr(model_object) == (
-            f"<{model_object._meta.name}: constants({join(model_object._meta.constants)}), "
-            f"fields({join(model_object._meta.fields)}), Meta({join(model_object._meta.meta)})>"
+            f"<{model_object._meta.name}: "
+            f"constants({join(model_object._meta.constants)}), "
+            f"fields({join(model_object._meta.fields)}), "
+            f"Meta({join(model_object._meta.meta)})>"
         )
 
         return model_object

@@ -5,16 +5,15 @@ verify_ssl = true
 
 [packages]
 django = "*"
-faker = "*"
-hypothesis = "*"
-pytest = "*"
-pytest-cov = "*"
-pytest-django = "*"
-pytest-pythonpath = "*"
+packaging = "*"
+pytest = ">=3.5.0"
 
 [requires]
-python_version = "3.7"
+python_version = ">=3.5"
 
 [dev-packages]
-ipdb = "*"
-black = "*"
+faker = ">=1.0.1"
+hypothesis = ">=4.0.2"
+ipdb = ">=0.11"
+pytest-django = ">=3.4.5"
+pytest-pythonpath = ">=0.7.3"

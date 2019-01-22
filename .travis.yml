@@ -1,24 +1,24 @@
 sudo: false
 language: python
-matrix:
-  include:
-  - python: 3.5
-    env: TOX_ENV=py35
-  - python: 3.6
-    env: TOX_ENV=py36
-  - python: 3.7
-    env: TOX_ENV=py37
-  - python: 3.6
-    env: TOX_ENV=flake8
+python:
+  - "3.5"
+  - "3.6"
+  - "3.7"
+
 install:
-- pip install tox
+  - pip install pipenv
+  - pipenv install
+
 script:
-- tox -e $TOX_ENV
+  - make reformat
+  - make test
+
 before_cache:
-- rm -rf $HOME/.cache/pip/log
+  - rm -rf $HOME/.cache/pip/log
 cache:
   directories:
-  - "$HOME/.cache/pip"
+    - "$HOME/.cache/pip"
+
 deploy:
   provider: pypi
   user: kmarilleau
@@ -26,6 +26,5 @@ deploy:
     secure: BrjYN6Web2FH/hdJvSDPDXgBt+ivjsXT85wVpgbnNrWFh86cDDNQa7VGRnNzaxUkgfErp+La3HrGVj+Cfkks6gVhuSpsy89rPOK8uCsTAFuQIyFmOUV84g936cJrognsTH+Tj+dQvtja6vSjSXyiUeTcnxWbf4dZuQgMCCqgpw/rdiGWgYpquUYtc1Baoa9mmeFoUJZOprH2vEvRBeOl/vaDS1HKsXAIjdP9i6Jo5MWG9ziofghJ0iaB23wKiFKB/q01P8qE/FPaz349QhN3su5OOK5iA+C9dCRtZ/ZYvYxvMgo5ghDUjl5pzBIoF6jSE55+oPN6jjuAzHehoAx9gTRfXSDVSqPCYz2Q0O6OTl+EWqfdZpDL6EfJxu0y09DvpO6StfeOyxynOo6qsUjwZJ4vPt+TCDklaHcaeYSpu+IUBQkLndO/GPgrjvDUK7EuiZZkMPQ8OQGiVL2x9qcuKCEl82OlUlcbm2wkAOy3ETO0qlU6ZKpKozddIJfo49q1E/LMa43WVQHk17IJ0DhoZMHlwjCzJ1RR24mi2i6iSzkeP5jfJgAbjVlxkwkcE+rSuP4i1eBP6XNR2qKFGH8P0x9E7Y9UKR5+SVNnEaK0eEzj8kr2ZP39Qmsh/E2596G123OWBa/Oz1bVnU5TVh8l/tynAME7jGShMfcH3UVD4Bk=
   skip_cleanup: true
   on:
-    tags: true
     branch: master
-    python: '3.7'
+    python: "3.7"

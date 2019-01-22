@@ -13,7 +13,7 @@ def read(fname):
 
 setup(
     name="pytest-django-model",
-    version="0.1.2",
+    version="0.1.0",
     author="Kevin Marilleau",
     author_email="kevin.marilleau@gmail.com",
     maintainer="Kevin Marilleau",
@@ -41,5 +41,5 @@ setup(
     entry_points={"pytest11": ["django-model = pytest_django_model.plugin"]},
     packages=["pytest_django_model"],
     package_dir={"pytest_django_model": "pytest_django_model"},
-    package_data={"pytest_django_model": ["*.py"]}
+    package_data={"pytest_django_model": ["*.py"]},
 )
