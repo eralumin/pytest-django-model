@@ -9,7 +9,7 @@ packaging = "*"
 pytest = ">=3.5.0"
 
 [requires]
-python_version = ">=3.5"
+python_version = ">=3.6"
 
 [dev-packages]
 faker = ">=1.0.1"
