@@ -2,8 +2,6 @@
 
 import os
 
-import pytest
-
 from .file import FILE
 from .objects import AttributeObject
 from .utils import a_or_an

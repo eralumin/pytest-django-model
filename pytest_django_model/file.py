@@ -5,7 +5,7 @@ from importlib import import_module, reload
 
 from .objects import AttributeObject
 
-MODULE = "pytest_django_models_generated"
+MODULE = "pytest_django_model_generated"
 FILE = f"{MODULE}.py"
 FILE_HEADER = (
     "# coding: utf-8\n\n"
@@ -19,9 +19,9 @@ CLASS_FORMAT = "class {name}:\n"
 
 FUNC_DEF_FORMAT = """
     def {func_name}(self):
-        {Model} = self._meta.model
+        {original}, {tester}= self._meta.model, self
+        
 """
-
 FUNC_ASSERT_FORMAT = """
         assert {original} == {tester}"""
 
@@ -69,7 +69,7 @@ class FileGenerator:
         """Retrieve Class Functions in Generated File and return them as a dict.
         """
         imported_module = import_module(MODULE)
-        
+
         while not hasattr(imported_module, self.class_name):
             reload(imported_module)
         else:
@@ -89,12 +89,14 @@ class FileGenerator:
         func_name = f"test_{attr_type}"
 
         # Write Test Function.
-        func = FUNC_DEF_FORMAT.format(func_name=func_name, Model=self.original._meta.name)
+        func = FUNC_DEF_FORMAT.format(
+            func_name=func_name,
+            original=self.original._meta.name,
+            tester=self.tester._meta.name,
+        )
         for attr_name, attr in getattr(self.tester._meta, attr_type).items():
             original_attr = self.get_original_attr(
-                instance=self.original,
-                attr=attr_name,
-                breadcrumb=attr.breadcrumb,
+                instance=self.original, attr=attr_name, breadcrumb=attr.breadcrumb
             )
 
             func += FUNC_ASSERT_FORMAT.format(

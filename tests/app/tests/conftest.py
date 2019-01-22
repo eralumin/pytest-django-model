@@ -3,3 +3,5 @@
 import os
 
 os.environ["DEBUG"] = "True"
+
+APP_LABEL = "app"

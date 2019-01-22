@@ -15,16 +15,11 @@ from hypothesis.stateful import (
     rule,
 )
 
-from pytest_django_models.file import FILE, FILE_HEADER, MODULE, FileGenerator
-from pytest_django_models.objects import get_model_object
+from pytest_django_model.file import FILE, FILE_HEADER, MODULE, FileGenerator
+from pytest_django_model.objects import get_model_object
 
-from .factories import (
-    default_meta,
-    fake_class_name,
-    fake_constants,
-    fake_fields_data,
-)
-from .utils import hasattrs, model_exists, get_django_model
+from .factories import default_meta, fake_class_name, fake_constants, fake_fields_data
+from .utils import get_django_model, hasattrs, model_exists
 
 
 class StatefulTestFileGenerator(RuleBasedStateMachine):

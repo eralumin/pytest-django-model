@@ -16,5 +16,5 @@ pytest-pythonpath = "*"
 python_version = "3.7"
 
 [dev-packages]
-black = "*"
 ipdb = "*"
+black = "*"

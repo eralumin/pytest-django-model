@@ -7,10 +7,8 @@ from django.db import models
 from faker import Faker
 from hypothesis.strategies import composite
 
-from pytest_django_models.objects import ModelGenerator
+from pytest_django_model.objects import ModelGenerator
 
-
-APP_LABEL = "app"
 
 fake = Faker()
 
@@ -98,6 +96,7 @@ def fake_constant():
 def fake_constants():
     return st.dictionaries(keys=fake_attr_name(), values=fake_constant(), max_size=5)
 
+
 @composite
 def fake_field_data(draw, dirty=False):
     if dirty:
@@ -123,7 +122,12 @@ def fake_field_data(draw, dirty=False):
 
 
 def fake_fields_data(dirty=False, min_size=0):
-    return st.dictionaries(keys=fake_attr_name(), values=fake_field_data(dirty), min_size=min_size, max_size=5)
+    return st.dictionaries(
+        keys=fake_attr_name(),
+        values=fake_field_data(dirty),
+        min_size=min_size,
+        max_size=5,
+    )
 
 
 @composite
@@ -142,25 +146,12 @@ def default_meta():
 
 # MODEL FACTORIES
 #################
-# @composite
-# def fake_rel_field(draw):
-#     to_self = "self"
-#     to_another_field = type(
-#         fake_class_name(),
-#         (models.Model,),
-#         {"Meta": get_meta_class(), "__module__": APP_LABEL},
-#     )
-
-#     return draw(st.one_of(to_self, to_another_field))
-
-
 BINARY_FIELDS = [models.BinaryField, models.FileField]
 BOOL_FIELDS = [models.BooleanField, models.NullBooleanField]
 CHAR_FIELDS = [models.CharField, models.EmailField, models.TextField, models.URLField]
 NUMERIC_FIELDS = [models.IntegerField, models.SmallIntegerField, models.FloatField]
-REL_FIELDS = []  # models.ForeignKey, models.ManyToManyField, models.OneToOneField]
 
-FIELDS = [*BINARY_FIELDS, *BOOL_FIELDS, *CHAR_FIELDS, *NUMERIC_FIELDS, *REL_FIELDS]
+FIELDS = [*BINARY_FIELDS, *BOOL_FIELDS, *CHAR_FIELDS, *NUMERIC_FIELDS]
 
 FIELD_ATTRS = {
     "null": {"required": [*FIELDS], "excluded": [*CHAR_FIELDS], "value": st.just(True)},
@@ -175,7 +166,6 @@ FIELD_ATTRS = {
             *BINARY_FIELDS,
             *BOOL_FIELDS,
             *NUMERIC_FIELDS,
-            *REL_FIELDS,
             models.TextField,
         ],
         "required": [models.CharField, models.EmailField, models.URLField],
@@ -183,15 +173,4 @@ FIELD_ATTRS = {
     },
     "unique": {"value": st.booleans()},
     "verbose_name": {"value": fake_word()},
-    # # REL FIELDS ATTRS
-    # "to": {
-    #     "excluded": [*BINARY_FIELDS, *BOOL_FIELDS, *CHAR_FIELDS, *NUMERIC_FIELDS],
-    #     "required": [*REL_FIELDS],
-    #     "value": fake_rel_field(),
-    # },
-    # "on_delete": {
-    #     "excluded": [*BINARY_FIELDS, *BOOL_FIELDS, *CHAR_FIELDS, *NUMERIC_FIELDS],
-    #     "required": [*REL_FIELDS],
-    #     "value": st.just(models.CASCADE),
-    # },
 }

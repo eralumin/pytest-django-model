@@ -14,28 +14,9 @@ pytest-django-models
     :target: https://travis-ci.org/kmarilleau/pytest-django-models
     :alt: See Build Status on Travis CI
 
-.. image:: https://ci.appveyor.com/api/projects/status/github/kmarilleau/pytest-django-models?branch=master
-    :target: https://ci.appveyor.com/project/kmarilleau/pytest-django-models/branch/master
-    :alt: See Build Status on AppVeyor
-
 A Simple Way to Test your Django Models
 
 ----
-
-This `pytest`_ plugin was generated with `Cookiecutter`_ along with `@hackebrot`_'s `cookiecutter-pytest-plugin`_ template.
-
-
-Features
---------
-
-* TODO
-
-
-Requirements
-------------
-
-* TODO
-
 
 Installation
 ------------
@@ -48,7 +29,7 @@ You can install "pytest-django-models" via `pip`_ from `PyPI`_::
 Usage
 -----
 
-* TODO
+    $ from pytest_django_model import pytest_django_model
 
 Contributing
 ------------

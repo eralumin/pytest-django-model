@@ -6,7 +6,7 @@ from django.db.models import Field
 from django.db.models.fields import related_descriptors
 from django.db.models.options import Options
 
-from .utils import is_dunder
+from .utils import get_model_fields, is_dunder
 
 DIRTY_FIELD_ATTRS = ["serialize"]
 
@@ -39,7 +39,7 @@ RELATED_DESCRIPTORS = tuple(
     [
         getattr(related_descriptors, attr)
         for attr in dir(related_descriptors)
-        if not is_dunder(attr) and inspect.isclass(attr)
+        if not is_dunder(attr) and inspect.isclass(getattr(related_descriptors, attr))
     ]
 )
 
@@ -133,13 +133,13 @@ class ModelObject:
 
 
 class ModelGenerator:
-    def __call__(self, model):
+    def __call__(self, model, has_id=None):
         """Retrieve Model Fields, Constants and Meta Options and save them as a dict.
         Then create ModelObject and return it.
         """
         self.model = model
         self.constants = self.get_constants()
-        self.fields = self.get_fields()
+        self.fields = self.get_fields(has_id)
         self.meta_options = self.get_meta_options()
 
         model_object = ModelObject(
@@ -205,15 +205,17 @@ class ModelGenerator:
 
         return field_attrs
 
-    def get_fields(self):
+    def get_fields(self, has_id):
         """Retrieve Original Fields and return them as a dict.
         """
         # Retrieve list of fields
-        fields_list = self.model._meta.local_fields
-        fields_list += [field for field in self.model._meta.local_many_to_many]
+        fields = get_model_fields(self.model)
 
         fields_dict = dict()
-        for field in fields_list:
+        for field in fields:
+            if has_id is False and field.name == "id":
+                continue
+
             field_attrs = self.get_field_attrs(field)
             fields_dict[field.name] = {"class": field.__class__, "attrs": field_attrs}
 
@@ -227,34 +229,27 @@ class ModelGenerator:
     def is_constant(self, attr, value):
         """Verify if given attribute is a constant.
         """
-        # If _meta exists, append field in fields list to ignore them.
-        fields = set()
-        try:
-            meta = self.model._meta
-            fields.update([field.attname for field in meta.local_fields])
-            fields.update(list(meta._forward_fields_map.keys()))
-        except AttributeError:
-            pass
-        finally:
-            if (
-                # Ignore Exception Objects.
-                type(value) == type
-                # Ignore Special Methods.
-                or is_dunder(attr)
-                # Ignore Django Model Attributes.
-                or attr in ("objects", "id", "_meta")
-                # Ignore Fields.
-                or attr in fields
-                # Ignore if is instance of Field.
-                or isinstance(value, Field)
-                # Ignore Properties.
-                or isinstance(value, property)
-                # Ignore Descriptors.
-                or isinstance(value, RELATED_DESCRIPTORS)
-            ):
-                return False
-            else:
-                return True
+        fields = self.model._meta._forward_fields_map.keys()
+
+        if (
+            # Ignore Exception Objects.
+            type(value) == type
+            # Ignore Special Methods.
+            or is_dunder(attr)
+            # Ignore Django Model Attributes.
+            or attr in ("objects", "id", "_meta")
+            # Ignore Fields.
+            or attr in fields
+            # Ignore if is instance of Field.
+            or isinstance(value, Field)
+            # Ignore Properties.
+            or isinstance(value, property)
+            # Ignore Descriptors.
+            or isinstance(value, RELATED_DESCRIPTORS)
+        ):
+            return False
+        else:
+            return True
 
 
 get_model_object = ModelGenerator()

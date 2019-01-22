@@ -1,15 +1,13 @@
 # coding: utf-8
 
 from inspect import isclass, isfunction
-from packaging import version
 
-from django.apps import apps
 from django.db.models import Field, Model
 from django.db.models.base import ModelBase
 
 from .file import FileGenerator
 from .objects import get_model_object
-from .utils import a_or_an, is_dunder, pytest_exit, delete_django_model
+from .utils import a_or_an, delete_django_model, is_dunder, pytest_exit
 
 
 class InvalidModelError(AttributeError, NameError):
@@ -38,7 +36,8 @@ def is_django_model_attr(attr, value):
     else:
         return True
 
-class TestModel(type):
+
+class PytestDjangoModel(type):
     def __new__(cls, name, bases, dct):
         # Retrieve Data
         ###############
@@ -50,6 +49,7 @@ class TestModel(type):
         parents = cls.get_parents(cls, meta)
 
         tester_name = name
+        tester_has_id = isinstance(dct.get("id", None), Field)
         tester = cls.get_tester(cls, tester_name, dct, original, parents)
 
         # Validate Data
@@ -59,9 +59,9 @@ class TestModel(type):
         # Create Data
         #############
         OriginalObject = get_model_object(original)
-        TesterObject = get_model_object(tester)
+        TesterObject = get_model_object(tester, has_id=tester_has_id)
         # Remove tester from django cache
-        delete_django_model(original.__module__, tester_name)
+        delete_django_model(original._meta.app_label, tester_name)
 
         # Get Test Functions
         generated_file = FileGenerator(OriginalObject, TesterObject)
@@ -142,7 +142,7 @@ class TestModel(type):
                     error_msg = get_invalid_model_msg(parents)
                     raise InvalidModelError(f"'parents': {error_msg}")
             except Exception as e:
-                    pytest_exit(e)
+                pytest_exit(e)
         else:
             return None
 
@@ -159,6 +159,7 @@ class TestModel(type):
         """Make a cleaned copy of the given class and return it.
         """
         dct = cls.get_cleaned_tester(cls, dct)
+
         # Add Original Module
         dct["__module__"] = original.__module__
         # Create Django Model

@@ -1,11 +1,14 @@
 # coding: utf-8
 
-from operator import attrgetter
 from collections import Counter
-from django.apps import apps
+from operator import attrgetter
+
 from django.db.models import Model
-from .factories import APP_LABEL
-from pytest_django_models.utils import django_models
+
+from pytest_django_model.utils import django_all_models
+
+from .conftest import APP_LABEL
+
 
 # ASSERT UTILS
 ##############
@@ -30,7 +33,7 @@ def have_similarities(*args):
 
 
 def model_exists(model):
-    django_model = django_models[APP_LABEL].pop(model.lower(), None)
+    django_model = django_all_models[APP_LABEL].pop(model.lower(), None)
 
     return True if django_model else False
 
@@ -71,4 +74,3 @@ def get_django_model(name, constants, fields, meta, parents=None):
     bases = parents if parents else (Model,)
 
     return type(name, bases, dct)
-

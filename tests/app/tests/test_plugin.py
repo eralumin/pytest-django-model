@@ -1,12 +1,12 @@
 # coding: utf-8
 
 import pytest
-from hypothesis import strategies as st
 from hypothesis import assume
+from hypothesis import strategies as st
 from hypothesis.stateful import Bundle, RuleBasedStateMachine, rule
 
-from pytest_django_models.objects import AttributeObject
-from pytest_django_models.plugin import pytest_assertrepr_compare
+from pytest_django_model.objects import AttributeObject
+from pytest_django_model.plugin import pytest_assertrepr_compare
 
 from .factories import OPERATORS, TYPES, fake_parents, fake_word
 

@@ -1,22 +1,21 @@
 # coding: utf-8
 
-from itertools import chain
-
 import pytest
 from django.db.models import CharField
 from hypothesis import assume
 from hypothesis import strategies as st
 from hypothesis.stateful import Bundle, RuleBasedStateMachine, consumes, rule
-from .utils import model_exists
 
-from pytest_django_models.core import (
+from pytest_django_model.core import (
     InvalidModelError,
     ModelNotFoundError,
-    TestModel,
+    PytestDjangoModel,
     get_invalid_model_msg,
 )
-from pytest_django_models.objects import get_model_object
+from pytest_django_model.objects import get_model_object
+from pytest_django_model.utils import delete_django_model, get_model_fields
 
+from .conftest import APP_LABEL
 from .factories import (
     BASIC_TYPES,
     default_meta,
@@ -35,7 +34,7 @@ from .utils import (
 )
 
 
-class StatefulTestTestModel(RuleBasedStateMachine):
+class StatefulTestPytestDjangoModel(RuleBasedStateMachine):
     # Basic Components
     ##################
     name = Bundle("name")
@@ -87,16 +86,11 @@ class StatefulTestTestModel(RuleBasedStateMachine):
         except Exception as e:
             pytest.fail(e)
         else:
-            parent.fields = [
-                field.name
-                for field in chain(
-                    parent._meta.local_fields, parent._meta.local_many_to_many
-                )
-            ]
+            parent.fields = [field.name for field in get_model_fields(parent)]
 
             return parent
 
-    # TestModel Components
+    # PytestDjangoModel Components
     ######################
     data = Bundle("data")
 
@@ -175,7 +169,7 @@ class StatefulTestTestModel(RuleBasedStateMachine):
         dct["Meta"].parents = parents
 
         try:
-            test_model = TestModel(name, bases, dct)
+            test_model = PytestDjangoModel(name, bases, dct)
         except Exception as e:
             pytest.fail(e)
 
@@ -190,7 +184,7 @@ class StatefulTestTestModel(RuleBasedStateMachine):
 
         error_msg = f"{name} must have a 'Meta' inner class with 'model' attribute."
         with pytest.raises(ModelNotFoundError, match=error_msg):
-            TestModel(name, bases, dct)
+            PytestDjangoModel(name, bases, dct)
 
         assert not model_exists(name)
 
@@ -203,7 +197,7 @@ class StatefulTestTestModel(RuleBasedStateMachine):
 
         error_msg = f"'Meta' inner class has not 'model' attribute."
         with pytest.raises(ModelNotFoundError, match=error_msg):
-            TestModel(name, bases, dct)
+            PytestDjangoModel(name, bases, dct)
 
         assert not model_exists(name)
 
@@ -224,7 +218,7 @@ class StatefulTestTestModel(RuleBasedStateMachine):
 
         error_msg = get_invalid_model_msg(invalid_class)
         with pytest.raises(InvalidModelError, match=error_msg):
-            TestModel(name, bases, dct)
+            PytestDjangoModel(name, bases, dct)
 
         assert not model_exists(name)
 
@@ -252,7 +246,7 @@ class StatefulTestTestModel(RuleBasedStateMachine):
             error_msg = f"'parents': {error_msg}"
 
         with pytest.raises(InvalidModelError, match=error_msg):
-            TestModel(name, bases, dct)
+            PytestDjangoModel(name, bases, dct)
 
         assert not model_exists(name)
 
@@ -271,9 +265,11 @@ class StatefulTestTestModel(RuleBasedStateMachine):
             fr"^The {name} Model get the following errors during validation:(.|\s)+"
         )
         with pytest.raises(InvalidModelError, match=error_msg):
-            TestModel(name, bases, dct)
+            PytestDjangoModel(name, bases, dct)
 
+        if model_exists(name):
+            delete_django_model(APP_LABEL, name)
         assert not model_exists(name)
 
 
-TestTestModel = StatefulTestTestModel.TestCase
+TestPytestDjangoModel = StatefulTestPytestDjangoModel.TestCase

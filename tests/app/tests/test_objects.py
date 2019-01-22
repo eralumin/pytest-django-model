@@ -5,7 +5,7 @@ from hypothesis import assume
 from hypothesis import strategies as st
 from hypothesis.stateful import Bundle, RuleBasedStateMachine, consumes, rule
 
-from pytest_django_models.objects import (
+from pytest_django_model.objects import (
     META_OPTIONS,
     AttributeObject,
     ModelGenerator,
@@ -22,7 +22,7 @@ from .factories import (
     fake_parents,
     fake_word,
 )
-from .utils import model_exists, have_difference, get_django_model
+from .utils import get_django_model, have_difference, model_exists
 
 
 class StatefulTestAttributeObject(RuleBasedStateMachine):
@@ -82,7 +82,7 @@ class StatefulTestAttributeObject(RuleBasedStateMachine):
 TestAttributeObject = StatefulTestAttributeObject.TestCase
 
 
-class StatefulTestModelObject(RuleBasedStateMachine):
+class StatefulPytestDjangoModelObject(RuleBasedStateMachine):
     model_object = Bundle("model_object")
 
     name = Bundle("name")
@@ -165,7 +165,7 @@ class StatefulTestModelObject(RuleBasedStateMachine):
         return model_object
 
 
-TestModelObject = StatefulTestModelObject.TestCase
+PytestDjangoModelObject = StatefulPytestDjangoModelObject.TestCase
 
 
 def test_model_generator__get_default_meta_options():
@@ -175,7 +175,7 @@ def test_model_generator__get_default_meta_options():
     assert all(option in meta for option in META_OPTIONS)
 
 
-class StatefulTestModelGenerator(RuleBasedStateMachine):
+class StatefulPytestDjangoModelGenerator(RuleBasedStateMachine):
     name = Bundle("name")
     constants = Bundle("constants")
     fields = Bundle("fields")
@@ -247,4 +247,4 @@ class StatefulTestModelGenerator(RuleBasedStateMachine):
             assert getattr(model_object.Meta, option_name) == meta_attribute_object
 
 
-TestModelGenerator = StatefulTestModelGenerator.TestCase
+PytestDjangoModelGenerator = StatefulPytestDjangoModelGenerator.TestCase
