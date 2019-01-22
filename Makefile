@@ -6,7 +6,7 @@ help:
 	@echo "    make reformat    reformat python code"
 
 setup:
-	pip install pipenv
+	pip install black pipenv
 	pipenv install --dev --three
 
 test:
