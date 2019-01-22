@@ -1,38 +1,33 @@
-# Config file for automatic testing at travis-ci.org
-
 sudo: false
 language: python
-
 matrix:
-    include:
-      - python: 3.5
-        env: TOX_ENV=py35
-      - python: 3.6
-        env: TOX_ENV=py36
-      - python: 3.7
-        env: TOX_ENV=py37
-      - python: 3.6
-        env: TOX_ENV=flake8
-
+  include:
+  - python: 3.5
+    env: TOX_ENV=py35
+  - python: 3.6
+    env: TOX_ENV=py36
+  - python: 3.7
+    env: TOX_ENV=py37
+  - python: 3.6
+    env: TOX_ENV=flake8
 install:
-  - pip install tox
-
+- pip install tox
 script:
-  - tox -e $TOX_ENV
-
+- tox -e $TOX_ENV
 before_cache:
-  - rm -rf $HOME/.cache/pip/log
-
+- rm -rf $HOME/.cache/pip/log
 cache:
   directories:
-    - $HOME/.cache/pip
-
+  - "$HOME/.cache/pip"
 deploy:
   provider: pypi
   user: kmarilleau
-  password: $PYPI_PASSWORD
+  password: "$PYPI_PASSWORD"
   skip_cleanup: true
   on:
     tags: true
     branch: master
-    python: "3.7"
+    python: '3.7'
+env:
+  global:
+    secure: yGqKCj+tB7Fms50mtnzJW4X4P7SACGBebcdIslL/WqTX0hq28KS8XVnyRVTmAy+T+EoxzLYIytbhGstrECpbFAkQsh9tlGDNaBj6dwr+//qYof4cDci2qNBuTrMkHLyc1b+Kh4MnHx/KbJwD9FkYpQ3fXrgJcbI+KLxTkt1a0KLs5teK5BmNdeBkKKrPOL0xl/eu6GjsIKCsKkP/GSAxA9FyknwLDG9l3J/qQuQmcgXShY3OJ3CwAvUJ6NFHbDfUEFljEdcc5pEBaVdrveqPtHCwD1WoAhqELTq2q1blamrg2RZb7Ii206j+rZOOBHY4zOate9MefJ9+sIjYrJDJGb0SoiqVIDZBhdWKcpvFQ9pMbjkmHyRuS3RgovktffjMhtguCkXwt9oj11SXjCd0TN87gAOpLaqLSJYklSWJ6LnpG/aI/VajGjLkJqYzJEBoPZj0eqDnyfSBBKi0xtFVd5H8IkB+QAsoBAfQI8nURg/4QPfQx6kwyHqKJHr0S+pfKIKe0H+/hdFZXiTGawPj447H8Nv6yqy7OUNZcfsQIyWuml4YPEZnmKgIB04N5Qn9EUvjybmhndREYUQ1jMZYGGUnDlfhs5/S/GGLBZZHEkg70lLH394N7LZeWV2cjCbQ1DwMU68+TXsIX+QpFSYtSqLyReaCOlSMPITfmxbh3BM=
