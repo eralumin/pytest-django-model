@@ -9,8 +9,8 @@ setup:
 	pip install pipenv
 	pipenv install --dev --three
 
-activate:
-	pipenv shell -c
-
 test:
 	pipenv run -- pytest
+
+reformat:
+	black .
