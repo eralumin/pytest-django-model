@@ -40,12 +40,14 @@ You can install "pytest-django-model" via `pip`_ from `PyPI`_::
 Usage
 -----
 
-The plugin is very easy to use, there are only three things to remember:
-    - The `PytestDjangoModel` metaclass.
-    - The `model` attribute.
-    - The `parent` attribute (optional).
+The plugin is very easy to use, there are only three things to remember\:
+    - The :python:`PytestDjangoModel` metaclass.
+    - The :python:`model` attribute.
+    - The :python:`parent` attribute (optional).
+
 
 Let's take this model:
+
 .. code-block:: python
 
     class Foo(Bar, Baz):
@@ -98,22 +100,23 @@ To test it, we just have to write this:
         )
         is_awesome = models.BooleanField(default=True)
 
-And voila! We can now launch tests with the command `pytest`.
+And voila! We can now launch tests with the command :bash:`pytest`.
 
-From there, the class `PytestDjangoModel` will generate a fake Django model
-from constants, fields and options of the Meta class. This model will inherit
-all the models of the `parents` attribute.
+From there, the class :python:`PytestDjangoModel` will generate a fake Django
+model from constants, fields and options of the Meta class. This model will
+inherit all the models of the :python:`parents` attribute.
 
-The data of `Foo` model and the model created from the `TestFoo` class will be
-extracted and compared. If any constant differs or isn't found, pytest will
-raise a error, same for a field or for a Meta option.
+The data of :python:`Foo` model and the model created from the
+:python:`TestFoo` class will be extracted and compared. If any constant differs
+or isn't found, pytest will raise a error, same for a field or for a Meta
+option.
 
 
 Contributing
 ------------
 Contributions are very welcome. Development Environment can be setup with
-`make setup`. Tests can be run with `make test`, please ensure the coverage at
-least stays the same before you submit a pull request.
+:bash:`make setup`. Tests can be run with :bash:`make test`, please ensure the
+coverage at least stays the same before you submit a pull request.
 
 License
 -------
@@ -138,3 +141,9 @@ description.
 .. _`pytest`: https://github.com/pytest-dev/pytest
 .. _`pip`: https://pypi.org/project/pip/
 .. _`PyPI`: https://pypi.org/project
+
+.. role:: python(code)
+   :language: python
+
+.. role:: bash(code)
+   :language: bash
