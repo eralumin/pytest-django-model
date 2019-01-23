@@ -1,5 +1,5 @@
 # coding: utf-8
-
+import re
 from inspect import isclass, isfunction
 
 from django.db.models import Field, Model
@@ -168,6 +168,28 @@ class PytestDjangoModel(type):
 
         return type(name, parents, dct)
 
+    def filter_errors(cls, errors, tester_name, original_name):
+        tester = "(?P<tester_name>[^.]+)\.(?P<tester_attr>[^.]+)"
+        original = "(?P<original_name>[^.]+)\.(?P<original_attr>[^.]+)"
+        patterns = (
+            fr"Reverse query name for '{tester}' clashes with reverse query name for '{original}'\.",
+            fr"Reverse accessor name for '{tester}' clashes with reverse accessor name for '{original}'\.",
+        )
+
+        filtered_errors = []
+        for pattern in patterns:
+            for error in errors:
+                match = re.fullmatch(pattern, error.msg)
+                if not (
+                    match
+                    and match.group("tester_name") == tester_name
+                    and match.group("original_name") == original_name
+                    and match.group("tester_attr") == match.group("original_attr")
+                ):
+                    filtered_errors.append(error)
+
+        return filtered_errors
+
     def validate_data(cls, name, tester, tester_name, original_name):
         levels = {
             50: "Critical",
@@ -179,7 +201,7 @@ class PytestDjangoModel(type):
         }
 
         try:
-            errors = tester.check()
+            errors = cls.filter_errors(cls, tester.check(), tester_name, original_name)
             if errors:
                 msg = f"The {name} Model get the following errors during validation:\n"
                 for error in errors:
