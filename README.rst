@@ -44,7 +44,7 @@ The plugin is very easy to use, there are only three things to remember\:
 
 - The ``PytestDjangoModel`` metaclass.
 - The ``model`` attribute.
-- The ``parent`` attribute (optional).
+- The ``parents`` attribute (optional).
 
 
 Let's take this model:
