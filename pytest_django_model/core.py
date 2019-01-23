@@ -169,8 +169,8 @@ class PytestDjangoModel(type):
         return type(name, parents, dct)
 
     def filter_errors(cls, errors, tester_name, original_name):
-        tester = "(?P<tester_name>[^.]+)\.(?P<tester_attr>[^.]+)"
-        original = "(?P<original_name>[^.]+)\.(?P<original_attr>[^.]+)"
+        tester = r"(?P<tester_name>[^.]+)\.(?P<tester_attr>[^.]+)"
+        original = r"(?P<original_name>[^.]+)\.(?P<original_attr>[^.]+)"
         patterns = (
             fr"Reverse query name for '{tester}' clashes with reverse query name for '{original}'\.",
             fr"Reverse accessor name for '{tester}' clashes with reverse accessor name for '{original}'\.",
