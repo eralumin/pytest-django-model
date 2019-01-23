@@ -109,7 +109,7 @@ all the models of the ``parents`` attribute.
 
 The data of ``Foo`` model and the model created from the ``TestFoo`` class will
 be extracted and compared. If any constant differs or isn't found, pytest will
-raise a error, same for a field or for a Meta option.
+raise a error, same for fields and Meta options.
 
 
 Contributing
