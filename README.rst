@@ -21,10 +21,10 @@ A Simple Way to Test your Django Models
 Description
 -----------
 
-This plugin allows you to simply test your Django models, by writing
-your tests as you would write your models. On the other hand,
-pytest-django-model tests only fields, constants, and the Meta inner class.
-You will have to write tests of methods and properties.
+This plugin allows you to simply test your Django models, by writing your tests
+as you would write your models. On the other hand, pytest-django-model tests
+only fields, constants, and the Meta inner class. You will have to write tests
+of methods and properties.
 
 The principle here is not really to test the behavior of your models but rather
 to make sure that the settings are the right ones.
@@ -40,12 +40,15 @@ You can install "pytest-django-model" via `pip`_ from `PyPI`_::
 Usage
 -----
 
-The plugin is very easy to use, there are only three things to remember:
-    - The `PytestDjangoModel` metaclass.
-    - The `model` attribute.
-    - The `parent` attribute (optional).
+The plugin is very easy to use, there are only three things to remember\:
+
+    - The ``PytestDjangoModel`` metaclass.
+    - The ``model`` attribute.
+    - The ``parent`` attribute (optional).
+
 
 Let's take this model:
+
 .. code-block:: python
 
     class Foo(Bar, Baz):
@@ -98,22 +101,22 @@ To test it, we just have to write this:
         )
         is_awesome = models.BooleanField(default=True)
 
-And voila! We can now launch tests with the command `pytest`.
+And voila! We can now launch tests with the command ``pytest``.
 
-From there, the class `PytestDjangoModel` will generate a fake Django model
+From there, the class ``PytestDjangoModel`` will generate a fake Django model
 from constants, fields and options of the Meta class. This model will inherit
-all the models of the `parents` attribute.
+all the models of the ``parents`` attribute.
 
-The data of `Foo` model and the model created from the `TestFoo` class will be
-extracted and compared. If any constant differs or isn't found, pytest will
+The data of ``Foo`` model and the model created from the ``TestFoo`` class will
+be extracted and compared. If any constant differs or isn't found, pytest will
 raise a error, same for a field or for a Meta option.
 
 
 Contributing
 ------------
 Contributions are very welcome. Development Environment can be setup with
-`make setup`. Tests can be run with `make test`, please ensure the coverage at
-least stays the same before you submit a pull request.
+``make setup``. Tests can be run with ``make test``, please ensure the coverage
+at least stays the same before you submit a pull request.
 
 License
 -------
