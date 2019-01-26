@@ -169,28 +169,36 @@ class PytestDjangoModel(type):
         return type(name, parents, dct)
 
     def filter_errors(cls, errors, tester_name, original_name):
+        """Returns only Errors that have not been raised due to a clash between the 
+        Tester Model and the Original Model.
+        """
         tester = r"(?P<tester_name>[^.]+)\.(?P<tester_attr>[^.]+)"
         original = r"(?P<original_name>[^.]+)\.(?P<original_attr>[^.]+)"
-        patterns = (
-            fr"Reverse query name for '{tester}' clashes with reverse query name for '{original}'\.",
-            fr"Reverse accessor name for '{tester}' clashes with reverse accessor name for '{original}'\.",
-        )
+        descriptors = ["query", "accessor", "query name", "accessor name"]
+        sentence = (fr"Reverse {{descriptor}} for '{tester}' clashes with "
+                    fr"reverse {{descriptor}} for '{original}'\.")
 
-        filtered_errors = []
-        for pattern in patterns:
-            for error in errors:
+        def ignored(error):
+            """Return True if Error match any pattern else return False.
+            """
+            for descriptor in descriptors:
+                pattern = sentence.format(descriptor=descriptor)
                 match = re.fullmatch(pattern, error.msg)
-                if not (
+                if (
                     match
                     and match.group("tester_name") == tester_name
                     and match.group("original_name") == original_name
                     and match.group("tester_attr") == match.group("original_attr")
                 ):
-                    filtered_errors.append(error)
+                    return True
+            else:
+                return False
 
-        return filtered_errors
+        return [error for error in errors if not ignored(error)]
 
     def validate_data(cls, name, tester, tester_name, original_name):
+        """Check Fake Model and if it got errors, list them and raise an Exception.
+        """
         levels = {
             50: "Critical",
             40: "Error",
