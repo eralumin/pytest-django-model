@@ -1,6 +1,7 @@
 # coding: utf-8
 
 import inspect
+from functools import partial, partialmethod
 
 from django.db.models import Field
 from django.db.models.fields import related_descriptors
@@ -236,8 +237,8 @@ class ModelGenerator:
             type(value) == type
             # Ignore Special Methods.
             or is_dunder(attr)
-            # Ignore Functions.
-            or inspect.isfunction(value)
+            # Ignore Partial Functions.
+            or isinstance(value, (partial, partialmethod))
             # Ignore Django Model Attributes.
             or attr in ("objects", "id", "_meta")
             # Ignore Fields.
