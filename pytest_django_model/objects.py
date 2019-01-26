@@ -236,6 +236,8 @@ class ModelGenerator:
             type(value) == type
             # Ignore Special Methods.
             or is_dunder(attr)
+            # Ignore Functions.
+            or inspect.isfunction(attr)
             # Ignore Django Model Attributes.
             or attr in ("objects", "id", "_meta")
             # Ignore Fields.
