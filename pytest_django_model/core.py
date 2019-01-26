@@ -162,7 +162,12 @@ class PytestDjangoModel(type):
 
         # Add Original Module
         dct["__module__"] = original.__module__
-        # Create Django Model
+
+        # Delete Meta Inner Class if it has no attributes.
+        if all(is_dunder(attr) for attr in dir(dct["Meta"])):
+            del dct["Meta"]
+
+        # Create Django Model.
         if not parents:
             parents = (Model,)
 

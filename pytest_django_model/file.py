@@ -120,7 +120,14 @@ class FileGenerator:
     def get_str_class(self):
         """Generate Test Class and return it with its name.
         """
-        class_name = f"{self.tester._meta.name}"
+        imported_module = import_module(MODULE)
+
+        # Rename Class if it's duplicated.
+        class_name, n = f"{self.tester._meta.name}", 0
+        while class_name in dir(imported_module):
+            class_name = f"{self.tester._meta.name}{n}"
+            n += 1
+
         str_class = CLASS_FORMAT.format(name=class_name)
 
         for str_function in self.str_functions.values():
