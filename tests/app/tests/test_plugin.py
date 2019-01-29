@@ -62,5 +62,4 @@ class StatefulTestAssertMsg(RuleBasedStateMachine):
             else:
                 assert msg is None
 
-
 TestAssertMsg = StatefulTestAssertMsg.TestCase
