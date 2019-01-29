@@ -7,7 +7,7 @@ from django.db.models import Field
 from django.db.models.fields import related_descriptors
 from django.db.models.options import Options
 
-from .utils import get_model_fields, is_dunder
+from .utils import a_or_an, get_model_fields, is_dunder
 
 DIRTY_FIELD_ATTRS = ["serialize"]
 
@@ -70,10 +70,14 @@ class AttributeObject:
         return parents_str
 
     def __eq__(self, other):
-        if isinstance(other, AttributeObject):
-            return self.cls == other.cls and self.value == other.value
+        if (
+            (other.value is NotImplemented)
+            or (other.cls != self.cls)
+            or (other.value != self.value)
+        ):
+            return False
         else:
-            return self.value == other
+            return True
 
     def __str__(self):
         return f"{self.name}"

@@ -70,11 +70,15 @@ class StatefulTestAttributeObject(RuleBasedStateMachine):
 
     @rule(first=attribute_object, second=attribute_object)
     def compare_attribute_objects(self, first, second):
-        # Test __eq__
-        assert first == first
+        assume(first is not NotImplemented)
 
+        # Test __eq__
         if first != second:
-            assert first.value != second.value or first.cls != second.cls
+            assert (
+                first.value != second.value
+                or first.cls != second.cls
+                or second.value is NotImplemented
+            )
         else:
             assert first.value == second.value and first.cls == second.cls
 

@@ -100,7 +100,7 @@ class StatefulTestFileGenerator(RuleBasedStateMachine):
 
         # Test names are corrects and attributes exists.
         appended_data = modified_file[len(initial_file) :]
-        pattern = r"assert (?P<original>\S+) == (?P<tester>\S+)"
+        pattern = r"assert (?P<original>\S+) == (?P<tester>\S+), assert_msg(.+)"
         for line in appended_data:
             finded = re.search(pattern, line)
             if finded:

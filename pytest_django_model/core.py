@@ -180,8 +180,10 @@ class PytestDjangoModel(type):
         tester = r"(?P<tester_name>[^.]+)\.(?P<tester_attr>[^.]+)"
         original = r"(?P<original_name>[^.]+)\.(?P<original_attr>[^.]+)"
         descriptors = ["query", "accessor", "query name", "accessor name"]
-        sentence = (fr"Reverse {{descriptor}} for '{tester}' clashes with "
-                    fr"reverse {{descriptor}} for '{original}'\.")
+        sentence = (
+            fr"Reverse {{descriptor}} for '{tester}' clashes with "
+            fr"reverse {{descriptor}} for '{original}'\."
+        )
 
         def ignored(error):
             """Return True if Error match any pattern else return False.
