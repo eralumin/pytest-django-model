@@ -16,6 +16,11 @@ def assert_msg(left, right):
             f"{left.breadcrumb} doesn't exist, the expected value is:\n"
             f"  - {right.cls.__name__}: {value_str(right.value)}"
         )
+    elif right.value is NotImplemented:
+        msg = get_msg(
+            f"The '{right.parents}' class shouldn't have a '{right.name}' attribute."
+        )
+
     elif left.cls != right.cls:
         msg = get_msg(
             f"{left.breadcrumb} and {right.breadcrumb} are not the same type:\n"

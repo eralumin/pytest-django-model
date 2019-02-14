@@ -30,10 +30,11 @@ class StatefulTestAssertMsg(RuleBasedStateMachine):
 
     @rule(
         left=attribute_object,
-        right=attribute_object.filter(lambda x: x.value != NotImplemented),
+        right=attribute_object,
     )
     def test_assert_msg(self, left, right):
         assume(left != right)
+        assume(any(not obj.value is NotImplemented) for obj in [left, right])
 
         try:
             msg = assert_msg(left, right)
@@ -46,6 +47,12 @@ class StatefulTestAssertMsg(RuleBasedStateMachine):
                     msg_start
                     + f"{left.breadcrumb} doesn't exist, "
                     + "the expected value is:\n"
+                )
+            elif right.value is NotImplemented:
+                assert msg.startswith(
+                    msg_start
+                    + f"The '{right.parents}' class shouldn't have a "
+                    + f"'{right.name}' attribute."
                 )
             elif left.cls != right.cls:
                 assert msg.startswith(
