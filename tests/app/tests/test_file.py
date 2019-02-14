@@ -5,7 +5,7 @@ import re
 import sys
 
 import pytest
-from hypothesis import assume
+from hypothesis import assume, event
 from hypothesis import strategies as st
 from hypothesis.stateful import (
     Bundle,
@@ -78,8 +78,11 @@ class StatefulTestFileGenerator(RuleBasedStateMachine):
     def assert_file_generator(self, original, tester):
         initial_file = []
         if os.path.isfile(FILE):
+            event("assert_file_generator: File already exists.")
             with open(FILE, "r") as f:
                 initial_file = f.read().splitlines()
+        else:
+            event("assert_file_generator: File doesn't exists.")
 
         file_generator_instance = FileGenerator(original, tester)
 
@@ -102,27 +105,26 @@ class StatefulTestFileGenerator(RuleBasedStateMachine):
         appended_data = modified_file[len(initial_file) :]
         pattern = r"assert (?P<original>\S+) == (?P<tester>\S+), assert_msg(.+)"
         for line in appended_data:
-            finded = re.search(pattern, line)
-            if finded:
-                finded = {
+            assert_line = re.search(pattern, line)
+            if assert_line:
+                assert_line = {
                     model: {
                         "name": breadcrumb.split(".")[0],
                         "attr": ".".join(breadcrumb.split(".")[1:]),
                     }
-                    for model, breadcrumb in finded.groupdict().items()
+                    for model, breadcrumb in assert_line.groupdict().items()
                 }
 
                 # Test names are corrects.
-                assert finded["original"]["name"] == original._meta.name
-                assert finded["tester"]["name"] == tester._meta.name
+                assert assert_line["original"]["name"] == original._meta.name
+                assert assert_line["tester"]["name"] == tester._meta.name
 
                 # Test attributes compared are the same.
-                assert finded["original"]["attr"] == finded["tester"]["attr"]
+                assert assert_line["original"]["attr"] == assert_line["tester"]["attr"]
 
                 # Test attributes exists.
-                assert hasattrs(original, finded["original"]["attr"])
-                assert hasattrs(tester, finded["tester"]["attr"])
-
+                assert hasattrs(original, assert_line["original"]["attr"])
+                assert hasattrs(tester, assert_line["tester"]["attr"])
         # Try retrieve generated functions.
         try:
             generated_functions = file_generator_instance.get_functions()

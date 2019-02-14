@@ -1,7 +1,7 @@
 # coding: utf-8
 
 import pytest
-from hypothesis import assume
+from hypothesis import assume, event
 from hypothesis import strategies as st
 from hypothesis.stateful import Bundle, RuleBasedStateMachine, consumes, rule
 
@@ -74,12 +74,14 @@ class StatefulTestAttributeObject(RuleBasedStateMachine):
 
         # Test __eq__
         if first != second:
+            event("compare_attribute_objects: Not Equal.")
             assert (
                 first.value != second.value
                 or first.cls != second.cls
                 or second.value is NotImplemented
             )
         else:
+            event("compare_attribute_objects: Equal.")
             assert first.value == second.value and first.cls == second.cls
 
 

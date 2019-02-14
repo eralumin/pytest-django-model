@@ -1,7 +1,7 @@
 # coding: utf-8
 
 import pytest
-from hypothesis import assume
+from hypothesis import assume, event
 from hypothesis import strategies as st
 from hypothesis.stateful import Bundle, RuleBasedStateMachine, rule
 
@@ -43,30 +43,35 @@ class StatefulTestAssertMsg(RuleBasedStateMachine):
         else:
             msg_start = f"assert {left.value} == {right.value}\n"
             if left.value is NotImplemented:
+                event("test_assert_msg: Left Value is NotImplemented.")
                 assert msg.startswith(
                     msg_start
                     + f"{left.breadcrumb} doesn't exist, "
                     + "the expected value is:\n"
                 )
             elif right.value is NotImplemented:
+                event("test_assert_msg: Right Value is NotImplemented.")
                 assert msg.startswith(
                     msg_start
                     + f"The '{right.parents}' class shouldn't have a "
                     + f"'{right.name}' attribute."
                 )
             elif left.cls != right.cls:
+                event("test_assert_msg: Left Class != Right Class.")
                 assert msg.startswith(
                     msg_start
                     + f"{left.breadcrumb} and {right.breadcrumb} "
                     + "are not the same type:\n"
                 )
             elif left.value != right.value:
+                event("test_assert_msg: Left Value != Right Value.")
                 assert msg.startswith(
                     msg_start
                     + f"{left.breadcrumb} and {right.breadcrumb} "
                     + "don't have the same value.\n"
                 )
             else:
+                event("test_assert_msg: No Error.")
                 assert msg is None
 
 TestAssertMsg = StatefulTestAssertMsg.TestCase

@@ -2,7 +2,7 @@
 
 import pytest
 from django.db.models import CharField
-from hypothesis import assume
+from hypothesis import assume, event
 from hypothesis import strategies as st
 from hypothesis.stateful import Bundle, RuleBasedStateMachine, consumes, rule
 
@@ -239,9 +239,11 @@ class StatefulTestPytestDjangoModel(RuleBasedStateMachine):
         error_msg = get_invalid_model_msg(invalid_class)
 
         if isiterable:
+            event("assert_parents_invalid_model: parent is an iterable.")
             dct["Meta"].parents.append(invalid_class)
             error_msg = f"'parents' contains invalid model: {error_msg}"
         else:
+            event("assert_parents_invalid_model: parent isn't an iterable.")
             dct["Meta"].parents = invalid_class
             error_msg = f"'parents': {error_msg}"
 
